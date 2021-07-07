@@ -5,8 +5,8 @@ const Card = (props) =>{
     console.log('** ejecuto componente cards**')
     return(
         <div className="box">
-            <p>{props.infoPk.name}</p>  
-            <img src={props.infoPk.sprites.front_default} alt='pokemon'/>
+            <p>{props.name}</p>  
+            <img src={props.img} alt='pokemon'/>
         </div>
     );
 }

@@ -4,9 +4,7 @@ import axios from 'axios';
 
 const Search =() =>{
     const [nombrePk,setPokemon] = useState('')
-    const [resultPk,setResulPk] = useState({});
-    //const [draw,setDraw] = useState(false);
-
+    const [resultPk,setResulPk] = useState([]);
 
     const handleSubmit = async (event) =>{
         event.preventDefault();
@@ -16,21 +14,38 @@ const Search =() =>{
     const handleApiPk = async () => {
         try{
             let result = await axios.get(`https://pokeapi.co/api/v2/pokemon/${nombrePk}`)
-            console.log('resul',result)
-            if(result.data){setResulPk(result.data)
-            console.log('resul',result)}else{setResulPk({}) }
+/*             console.log('resulAxio',result.data) */
+            if(result.data){
+                setResulPk([...resultPk,result.data])
+                console.log('resulPK',resultPk)
+            }/* else{setResulPk([...]) } */
         }catch(e){
             console.error(e) 
-            setResulPk({})
+            /* setResulPk([...resultPk]) */
+            console.log('resulPK',resultPk)
         }
         
     }
+
+    const drawCard = () => {
+        console.log(".......Entro en el drawCard .......")
+        return resultPk.map((elem, index)=> {
+            console.log('name:',elem.name,' img:', elem.sprites.front_default)
+            return <Card key={index} name={elem.name} img={elem.sprites.front_default} />
+        })
+    }
+
     useEffect (()=>{
-        console.log('--- ejecuto useEffect ---')
+        console.log('--- ejecuto useEffect handleApiPk ---')
         if (nombrePk) {
             handleApiPk()
         }
     },[nombrePk])
+
+ /*    useEffect(()=>{
+        console.log('--- ejecuto useEffect  Cards ---')
+        drawCard()
+    },[resultPk]) */
     
         return(
             <div className='formPokemon'>
@@ -40,7 +55,8 @@ const Search =() =>{
                     <button type='submit'>buscar</button>
                 </form>
                 {/* {Object.keys(resultPk).length!==0?<Card infoPk={resultPk} />:""} */}
-               { Object.keys(resultPk).length!==0?<Card infoPk={resultPk} />:""}
+               {/* { Object.keys(resultPk).length!==0?<Card infoPk={resultPk} />:""} */}
+               <div> {drawCard()} </div>
             </div>
         );
     
