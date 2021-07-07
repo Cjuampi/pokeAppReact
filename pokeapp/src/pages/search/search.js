@@ -5,44 +5,42 @@ import axios from 'axios';
 const Search =() =>{
     const [nombrePk,setPokemon] = useState('')
     const [resultPk,setResulPk] = useState({});
-    const [draw,setDraw] = useState(false);
+    //const [draw,setDraw] = useState(false);
 
-    const handleChangeNamePk = (event)=>{
-        setDraw(false)
-        setPokemon(event.target.value)
-        /* console.log('nombre:',nombrePk) */
-    }
-    const handleSubmit = (event) =>{
+
+    const handleSubmit = async (event) =>{
         event.preventDefault();
-        /* console.log('handleSubmit') */
-        
+        setPokemon(event.target.elements.namepokemon.value)        
     }
+
     const handleApiPk = async () => {
-        /* console.log('handleApiPk') */
         try{
             let result = await axios.get(`https://pokeapi.co/api/v2/pokemon/${nombrePk}`)
-            setResulPk(result.data)
-            console.log(result)
+            console.log('resul',result)
+            if(result.data){setResulPk(result.data)
+            console.log('resul',result)}else{setResulPk({}) }
         }catch(e){
-            console.error(e)
+            console.error(e) 
             setResulPk({})
         }
         
     }
     useEffect (()=>{
-        resultPk.name?setDraw(true):setDraw(false)
-    },[resultPk])
-
+        console.log('--- ejecuto useEffect ---')
+        if (nombrePk) {
+            handleApiPk()
+        }
+    },[nombrePk])
     
-
         return(
             <div className='formPokemon'>
                 <form onSubmit={handleSubmit}>
                     <label>Pokemon : </label>
-                    <input type='text' name='namepokemon' onChange={handleChangeNamePk}/>
-                    <button type='submit' onClick={handleApiPk}>buscar</button>
+                    <input type='text' name='namepokemon'/>
+                    <button type='submit'>buscar</button>
                 </form>
-                {draw===true?<Card infoPk={resultPk} />:''}
+                {/* {Object.keys(resultPk).length!==0?<Card infoPk={resultPk} />:""} */}
+               { Object.keys(resultPk).length!==0?<Card infoPk={resultPk} />:""}
             </div>
         );
     
