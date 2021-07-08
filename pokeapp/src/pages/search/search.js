@@ -1,29 +1,46 @@
 import React, { useState, useEffect} from 'react'
 import Card from '../../components/Cards/Cards'
 import axios from 'axios';
+import debounce from "debounce";
 
 const Search =() =>{
     const [nombrePk,setPokemon] = useState('')
     const [resultPk,setResulPk] = useState([]);
+  
 
-    const handleSubmit = async (event) =>{
+/*     const handleSubmit = async (event) =>{
         event.preventDefault();
         setPokemon(event.target.elements.namepokemon.value)        
+    } */
+
+    const handleChange = (e) => {
+        setPokemon(e.target.value)
     }
 
+    const existElement = (pokemon) =>{
+            return resultPk.findIndex((element) => {
+                if(element.name === pokemon){return true }else{return false}
+            })
+
+    }
+
+    const fDebouce = debounce(handleChange,1500)
+
     const handleApiPk = async () => {
-        try{
-            let result = await axios.get(`https://pokeapi.co/api/v2/pokemon/${nombrePk}`)
-/*             console.log('resulAxio',result.data) */
-            if(result.data){
-                setResulPk([...resultPk,result.data])
-                console.log('resulPK',resultPk)
-            }/* else{setResulPk([...]) } */
-        }catch(e){
-            console.error(e) 
-            /* setResulPk([...resultPk]) */
-            console.log('resulPK',resultPk)
-        }
+            try{
+                let result = await axios.get(`https://pokeapi.co/api/v2/pokemon/${nombrePk}`)
+                if(result.data){
+                    /* console.log('existe?:',existElement(nombrePk)) */
+                    if(existElement(nombrePk) === -1 ){
+                        setResulPk([...resultPk,result.data])
+                    } else{
+                        setResulPk([...resultPk])
+                    } 
+                }
+            }catch(e){
+                console.error(e) 
+                /* console.log('Catch resulPK',resultPk) */
+            }
         
     }
 
@@ -42,18 +59,14 @@ const Search =() =>{
         }
     },[nombrePk])
 
- /*    useEffect(()=>{
-        console.log('--- ejecuto useEffect  Cards ---')
-        drawCard()
-    },[resultPk]) */
     
         return(
             <div className='formPokemon'>
-                <form onSubmit={handleSubmit}>
+                {/* <form onSubmit={handleSubmit}> */}
                     <label>Pokemon : </label>
-                    <input type='text' name='namepokemon'/>
-                    <button type='submit'>buscar</button>
-                </form>
+                    <input type='text' name='namepokemon' onChange={fDebouce} />
+                    {/* <button type='submit'>buscar</button> */}
+                {/* </form> */}
                 {/* {Object.keys(resultPk).length!==0?<Card infoPk={resultPk} />:""} */}
                {/* { Object.keys(resultPk).length!==0?<Card infoPk={resultPk} />:""} */}
                <div> {drawCard()} </div>
