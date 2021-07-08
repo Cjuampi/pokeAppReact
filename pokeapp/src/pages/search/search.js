@@ -21,27 +21,25 @@ const Search =() =>{
             return resultPk.findIndex((element) => {
                 if(element.name === pokemon){return true }else{return false}
             })
-
     }
 
     const fDebouce = debounce(handleChange,1500)
 
     const handleApiPk = async () => {
             try{
-                let result = await axios.get(`https://pokeapi.co/api/v2/pokemon/${nombrePk}`)
-                if(result.data){
-                    /* console.log('existe?:',existElement(nombrePk)) */
-                    if(existElement(nombrePk) === -1 ){
+                if(existElement(nombrePk) === -1 ){
+                    let result = await axios.get(`https://pokeapi.co/api/v2/pokemon/${nombrePk}`)
+                    if(result.data){
+                        /* console.log('existe?:',existElement(nombrePk)) */
                         setResulPk([...resultPk,result.data])
-                    } else{
-                        setResulPk([...resultPk])
-                    } 
-                }
+                    }
+                } else{
+                    setResulPk([...resultPk])
+                } 
             }catch(e){
                 console.error(e) 
                 /* console.log('Catch resulPK',resultPk) */
             }
-        
     }
 
     const drawCard = () => {
